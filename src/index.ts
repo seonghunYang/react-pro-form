@@ -1,1 +1,1 @@
-export { ProgressiveForm } from "./progressive-form";
+export { ProgressiveForm } from "./components/progressive-form";

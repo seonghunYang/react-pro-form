@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { ProgressiveForm } from "../src/progressive-form";
+import { ProgressiveForm } from "./progressive-form";
 
 const meta = {
   title: "ProgressiveForm",

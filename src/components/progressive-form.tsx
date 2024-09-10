@@ -71,35 +71,6 @@ function ProgressiveFormRoot({ children }: React.PropsWithChildren<{}>) {
   );
 }
 
-export const ProgressiveForm = Object.assign(ProgressiveFormRoot, {
-  Step: Step,
-});
-
-function ProForm() {
-  // const { ProgressiveForm } = useProForm();
-
-  return (
-    <ProgressiveForm>
-      <ProgressiveForm.Step>
-        <label>이름</label>
-        <input name="name" />
-      </ProgressiveForm.Step>
-      <ProgressiveForm.Step depends={["name", "birthday"]}>
-        <label>전화번호</label>
-        <input name="phone" />
-      </ProgressiveForm.Step>
-      <ProgressiveForm.Step
-        depends={{
-          name: "홍길동",
-        }}
-      >
-        <label>생일</label>
-        <input name="birthday" />
-      </ProgressiveForm.Step>
-    </ProgressiveForm>
-  );
-}
-
 interface Step {
   // name: string; // name을 안받아도 될 것 같다는 생각이 든다.
   depends?: Record<string, any> | string[] | string;
@@ -109,3 +80,7 @@ interface Step {
 function Step({ depends, isError, children }: React.PropsWithChildren<Step>) {
   return <>{children}</>;
 }
+
+export const ProgressiveForm = Object.assign(ProgressiveFormRoot, {
+  Step: Step,
+});
