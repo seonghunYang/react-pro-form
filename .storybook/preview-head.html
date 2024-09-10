@@ -1,0 +1,23 @@
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        keyframes: {
+          opacity: {
+            from: { opacity: 0 },
+            to: { opacity: 1 },
+          },
+          opacityReverse: {
+            from: { opacity: 1 },
+            to: { opacity: 0 },
+          },
+        },
+        animation: {
+          "opacity-show": "opacity 0.2s ease-in",
+          "opacity-show-reverse": "opacityReverse 0.2s ease-in",
+        },
+      },
+    },
+  };
+</script>
