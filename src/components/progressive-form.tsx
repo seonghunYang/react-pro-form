@@ -72,12 +72,17 @@ function ProgressiveFormRoot({ children }: React.PropsWithChildren<{}>) {
 }
 
 interface Step {
-  // name: string; // name을 안받아도 될 것 같다는 생각이 든다.
+  stepKey: string;
   depends?: Record<string, any> | string[] | string;
   isError?: boolean;
 }
 
-function Step({ depends, isError, children }: React.PropsWithChildren<Step>) {
+function Step({
+  stepKey,
+  depends,
+  isError,
+  children,
+}: React.PropsWithChildren<Step>) {
   return <>{children}</>;
 }
 
