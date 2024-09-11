@@ -86,6 +86,21 @@ function Step({
   return <>{children}</>;
 }
 
+
+const findInputName = (children: React.ReactNode) => {
+  const result: string[] = [];
+  React.Children.toArray(children).forEach((child) => {
+    if (!React.isValidElement(child)) return;
+    if (child.type === "input" && child.props.name) {
+      result.push(child.props.name);
+    } else {
+      result.push(...findInputName(child.props.children));
+    }
+    // console.log(child);
+  });
+  return result;
+};
+
 export const ProgressiveForm = Object.assign(ProgressiveFormRoot, {
   Step: Step,
 });
