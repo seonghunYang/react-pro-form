@@ -12,21 +12,28 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <ProgressiveForm>
-      <ProgressiveForm.Step>
+      <ProgressiveForm.Step stepKey="1">
         <label>이름</label>
-        <input name="name" />
+        <input className="border" name="name" />
       </ProgressiveForm.Step>
-      <ProgressiveForm.Step depends={["name", "birthday"]}>
-        <label>전화번호</label>
-        <input name="phone" />
+      <ProgressiveForm.Step stepKey="2" depends={["name", "birthday"]}>
+        <div>
+          <label>전화번호</label>
+          <input name="phone" />
+          <label>집번호</label>
+          <input name="home_phone" />
+          <label>보호자 번호</label>
+          <input />
+        </div>
       </ProgressiveForm.Step>
       <ProgressiveForm.Step
+        stepKey="3"
         depends={{
-          name: "홍길동",
+          name: "asd",
         }}
       >
         <label>생일</label>
-        <input name="birthday" />
+        <input className="border" name="birthday" />
       </ProgressiveForm.Step>
     </ProgressiveForm>
   ),
