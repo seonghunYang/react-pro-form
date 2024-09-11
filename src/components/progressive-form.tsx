@@ -3,6 +3,61 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 
 type FormElements = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
+type Contidion = string;
+
+type DependencyNode = {
+  [stepKey: string]: Contidion;
+};
+type DependencyGraph = Record<string, DependencyNode[]>;
+
+type Indegree = Record<string, number>;
+
+type StepKeyToInputName = Map<string, string[]>;
+
+function getDependencyGraph(
+  children: React.ReactNode
+): [Indegree, DependencyGraph, StepKeyToInputName] {
+  const mapStepKeyToInputName = new Map<string, string[]>();
+  const indegree: Indegree = {};
+  const graphs: DependencyGraph = {};
+
+  React.Children.toArray(children).forEach((child) => {
+    if (!React.isValidElement(child)) return;
+    if (child.type !== Step) return;
+    const { stepKey, depends } = child.props as Step;
+
+    const inputNames = findInputName(child.props.children);
+    mapStepKeyToInputName.set(stepKey, inputNames);
+
+    if (depends === undefined) {
+      indegree[stepKey] = 0;
+    } else {
+      if (typeof depends === "string") {
+        indegree[stepKey] = 1;
+        graphs[depends] = (graphs[depends] || []).concat({ [stepKey]: "" });
+      }
+
+      if (Array.isArray(depends)) {
+        indegree[stepKey] = depends.length;
+        depends.forEach((name) => {
+          graphs[name] = (graphs[name] || []).concat({ [stepKey]: "" });
+        });
+      }
+
+      if (!Array.isArray(depends) && typeof depends === "object") {
+        indegree[stepKey] = Object.keys(depends).length;
+        Object.keys(depends).forEach((name) => {
+          graphs[name] = (graphs[name] || []).concat({
+            [stepKey]: depends[name],
+          });
+        });
+      }
+    }
+  });
+
+  return [indegree, graphs, mapStepKeyToInputName];
+}
+
 function ProgressiveFormRoot({ children }: React.PropsWithChildren<{}>) {
   // children의 deponds에 값들이 tocued 되었는지에 따라서 보여줅지 말지 확인
   const ref = useRef<HTMLFormElement>(null);
