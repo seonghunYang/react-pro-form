@@ -58,6 +58,59 @@ function getDependencyGraph(
   return [indegree, graphs, mapStepKeyToInputName];
 }
 
+function getZeroIndegree(indegree: Indegree) {
+  return Object.keys(indegree).filter((key) => indegree[key] === 0);
+}
+
+function topologicalSort(
+  formState: Record<string, any>,
+  indegree: Indegree,
+  dependencyGraph: DependencyGraph,
+  mapStepKeyToInputName: StepKeyToInputName
+) {
+  const indegreeCopy = { ...indegree };
+  const queue: string[] = [];
+  const result: string[] = [];
+  // 차수가 0인 스탭을 찾아서 큐에 넣는다.
+  queue.push(...getZeroIndegree(indegreeCopy));
+  result.push(...getZeroIndegree(indegreeCopy));
+
+  // 차수가 0인 스탭의 inputName을 순화하며 formState값을 사용해서 조건을 만족하면 해당 inputName에 의존하고 있는 스탭의 차수를 감소시킨다.
+  while (queue.length) {
+    const stepKey = queue.shift() as string;
+
+    const inputNames = mapStepKeyToInputName.get(stepKey);
+    inputNames?.forEach((inputName) => {
+      dependencyGraph[inputName]?.forEach((node) => {
+        Object.entries(node);
+        const [key, condition] = Object.entries(node)[0];
+        // key가 이미 result에 있다면 continue
+        if (result.includes(key)) return;
+
+        if (condition === "") {
+          if (formState[inputName]) {
+            indegreeCopy[key] -= 1;
+            if (indegreeCopy[key] === 0) {
+              queue.push(key);
+              result.push(key);
+            }
+          }
+        } else {
+          if (formState[inputName] === condition) {
+            indegreeCopy[key] -= 1;
+            if (indegreeCopy[key] === 0) {
+              queue.push(key);
+              result.push(key);
+            }
+          }
+        }
+      });
+    });
+  }
+
+  return result;
+}
+
 function ProgressiveFormRoot({ children }: React.PropsWithChildren<{}>) {
   // children의 deponds에 값들이 tocued 되었는지에 따라서 보여줅지 말지 확인
   const ref = useRef<HTMLFormElement>(null);
